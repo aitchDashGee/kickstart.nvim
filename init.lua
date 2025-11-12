@@ -134,13 +134,25 @@ require("lazy").setup({
       plugins = {
         spelling = { enabled = true }, -- shows spelling suggestions
       },
-      window = {
+      win = {
         border = "rounded", -- nice rounded borders
       },
       layout = {
         align = "center",
       },
     },
+    config = function(_, opts)
+      local wk = require("which-key")
+      wk.setup(opts)
+
+      wk.add({
+        { "<leader>f", group = "file/find" },
+        { "<leader>w", group = "write" },
+        { "<leader>q", group = "quit" },
+        { "<leader>h", group = "highlight" },
+        { "<leader>e", group = "explorer" },
+      })
+    end,
   },
 
   ---------------------------------------------------------
@@ -154,6 +166,23 @@ require("lazy").setup({
       auto_install = true,
       highlight = { enable = true },
       indent = { enable = true },
+    },
+  },
+  ---------------------------------------------------------
+  --- Treesitter extensions
+  ---------------------------------------------------------
+  {
+    "nvim-treesitter/nvim-treesitter-context",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    opts = {
+      enable = true,
+      max_lines = 3, -- how many lines of context to show
+      min_window_height = 0,
+      line_numbers = true,
+      multiline_threshold = 20,
+      trim_scope = "outer",
+      mode = "cursor", -- show context for cursor position
+      separator = nil,
     },
   },
 }, {
@@ -180,17 +209,4 @@ map("n", "<leader>fh", builtin.help_tags,  { desc = "Help tags" })
 -----------------------------------------------------------
 map("n", "<leader>e", "<cmd>NvimTreeToggle<cr>", { desc = "Toggle file explorer" })
 map("n", "<leader>o", "<cmd>NvimTreeFocus<cr>", { desc = "Focus file explorer" })
-
------------------------------------------------------------
---- Setup which-key
------------------------------------------------------------
-local wk = require("which-key")
-
-wk.register({
-  ["<leader>f"] = { name = "+file/find" },
-  ["<leader>w"] = { name = "+write" },
-  ["<leader>q"] = { name = "+quit" },
-  ["<leader>h"] = { name = "+highlight" },
-  ["<leader>e"] = { name = "+explorer" },
-}, { prefix = "<leader>" })
 
