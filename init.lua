@@ -185,6 +185,61 @@ require("lazy").setup({
       separator = nil,
     },
   },
+  ---------------------------------------------------------
+  --- LSP setup: mason + lspconfig + cmp
+  ---------------------------------------------------------
+  {
+    "williamboman/mason.nvim",
+    opts = {},
+  },
+
+  {
+    "williamboman/mason-lspconfig.nvim",
+    dependencies = { "williamboman/mason.nvim" },
+    opts = {
+      ensure_installed = { "lua_ls", "omnisharp", "pyright" }, -- add servers you want
+      automatic_installation = true,
+    },
+  },
+
+  {
+    "neovim/nvim-lspconfig",
+  },
+
+  {
+    "hrsh7th/nvim-cmp",
+    dependencies = {
+      "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      "hrsh7th/cmp-cmdline",
+      "L3MON4D3/LuaSnip",
+    },
+    config = function()
+      local cmp = require("cmp")
+      cmp.setup({
+        snippet = {
+          expand = function(args)
+            require("luasnip").lsp_expand(args.body)
+          end,
+        },
+        mapping = cmp.mapping.preset.insert({
+          ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+          ["<C-f>"] = cmp.mapping.scroll_docs(4),
+          ["<C-Space>"] = cmp.mapping.complete(),
+          ["<C-e>"] = cmp.mapping.abort(),
+          ["<CR>"] = cmp.mapping.confirm({ select = true }),
+        }),
+        sources = cmp.config.sources({
+          { name = "nvim_lsp" },
+          { name = "luasnip" },
+        }, {
+          { name = "buffer" },
+          { name = "path" },
+        }),
+      })
+    end,
+  },
 }, {
   ui = { border = "rounded" },
   checker = { enabled = true },
@@ -209,4 +264,42 @@ map("n", "<leader>fh", builtin.help_tags,  { desc = "Help tags" })
 -----------------------------------------------------------
 map("n", "<leader>e", "<cmd>NvimTreeToggle<cr>", { desc = "Toggle file explorer" })
 map("n", "<leader>o", "<cmd>NvimTreeFocus<cr>", { desc = "Focus file explorer" })
+
+-----------------------------------------------------------
+--- LSP configuration
+-----------------------------------------------------------
+local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
+-- Lua
+vim.lsp.config("lua_ls", {
+  capabilities = capabilities,
+  settings = {
+    Lua = {
+      diagnostics = { globals = { "vim" } },
+      workspace = { library = vim.api.nvim_get_runtime_file("", true) },
+      telemetry = { enable = false },
+    },
+  },
+})
+
+-- C# (OmniSharp)
+vim.lsp.config("omnisharp", {
+  capabilities = capabilities,
+})
+
+-- Python
+vim.lsp.config("pyright", {
+  capabilities = capabilities,
+})
+
+-- LSP keymaps
+map("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
+map("n", "K", vim.lsp.buf.hover, { desc = "Hover documentation" })
+map("n", "gi", vim.lsp.buf.implementation, { desc = "Go to implementation" })
+map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename symbol" })
+map("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code action" })
+map("n", "gr", vim.lsp.buf.references, { desc = "List references" })
+map("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
+map("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
+map("n", "<leader>dl", "<cmd>Telescope diagnostics<cr>", { desc = "Diagnostics list" })
 
