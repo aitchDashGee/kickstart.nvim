@@ -123,6 +123,25 @@ require("lazy").setup({
       },
     },
   },
+
+  ---------------------------------------------------------
+  --- Show keybindings: which-key
+  ---------------------------------------------------------
+  {
+    "folke/which-key.nvim",
+    event = "VeryLazy",
+    opts = {
+      plugins = {
+        spelling = { enabled = true }, -- shows spelling suggestions
+      },
+      window = {
+        border = "rounded", -- nice rounded borders
+      },
+      layout = {
+        align = "center",
+      },
+    },
+  },
 }, {
   ui = { border = "rounded" },
   checker = { enabled = true },
@@ -147,4 +166,17 @@ map("n", "<leader>fh", builtin.help_tags,  { desc = "Help tags" })
 -----------------------------------------------------------
 map("n", "<leader>e", "<cmd>NvimTreeToggle<cr>", { desc = "Toggle file explorer" })
 map("n", "<leader>o", "<cmd>NvimTreeFocus<cr>", { desc = "Focus file explorer" })
+
+-----------------------------------------------------------
+--- Setup which-key
+-----------------------------------------------------------
+local wk = require("which-key")
+
+wk.register({
+  ["<leader>f"] = { name = "+file/find" },
+  ["<leader>w"] = { name = "+write" },
+  ["<leader>q"] = { name = "+quit" },
+  ["<leader>h"] = { name = "+highlight" },
+  ["<leader>e"] = { name = "+explorer" },
+}, { prefix = "<leader>" })
 
