@@ -142,6 +142,20 @@ require("lazy").setup({
       },
     },
   },
+
+  ---------------------------------------------------------
+  --- Syntax highlighting: treesitter
+  ---------------------------------------------------------
+  {
+    "nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate", -- auto-update parsers
+    opts = {
+      ensure_installed = { "c_sharp", "json", "bash", "lua", "vim", "vimdoc", "c", "cpp", "python", "javascript", "html", "css" },
+      auto_install = true,
+      highlight = { enable = true },
+      indent = { enable = true },
+    },
+  },
 }, {
   ui = { border = "rounded" },
   checker = { enabled = true },
