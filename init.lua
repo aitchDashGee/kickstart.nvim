@@ -38,6 +38,7 @@ local map = vim.keymap.set
 map("n", "<leader>q", "<cmd>q<cr>", { desc = "Quit" })
 map("n", "<leader>w", "<cmd>w<cr>", { desc = "Save" })
 map("n", "<leader>h", "<cmd>nohlsearch<cr>", { desc = "Clear search highlight" })
+map("i", "jk", "<Esc>", { desc = "Escape insert mode" })
 
 -----------------------------------------------------------
 --- Bootstrap lazy.nvim plugin manager
