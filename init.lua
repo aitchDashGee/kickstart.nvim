@@ -198,13 +198,19 @@ require("lazy").setup({
     "williamboman/mason-lspconfig.nvim",
     dependencies = { "williamboman/mason.nvim" },
     opts = {
-      ensure_installed = { "lua_ls", "omnisharp", "pyright" }, -- add servers you want
+      ensure_installed = { "lua_ls", "pyright" }, -- add servers you want
       automatic_installation = true,
     },
   },
 
   {
     "neovim/nvim-lspconfig",
+  },
+
+  {
+    "seblyng/roslyn.nvim",
+    ft = "cs",
+    opts = {},
   },
 
   {
@@ -283,9 +289,23 @@ vim.lsp.config("lua_ls", {
   },
 })
 
--- C# (OmniSharp)
-vim.lsp.config("omnisharp", {
+-- C# (Roslyn)
+vim.lsp.config("roslyn", {
   capabilities = capabilities,
+  cmd = {
+    vim.fn.expand("~\\.dotnet\\tools\\roslyn-language-server.cmd"),
+    "--stdio",
+  },
+  settings = {
+    ["csharp|inlay_hints"] = {
+      csharp_enable_inlay_hints_for_implicit_variable_types = true,
+      csharp_enable_inlay_hints_for_lambda_parameter_types = true,
+      dotnet_enable_inlay_hints_for_parameters = true,
+    },
+    ["csharp|code_lens"] = {
+      dotnet_enable_references_code_lens = true,
+    },
+  },
 })
 
 -- Python
@@ -303,4 +323,3 @@ map("n", "gr", vim.lsp.buf.references, { desc = "List references" })
 map("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
 map("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
 map("n", "<leader>dl", "<cmd>Telescope diagnostics<cr>", { desc = "Diagnostics list" })
-
